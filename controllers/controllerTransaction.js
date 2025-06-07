@@ -1,4 +1,4 @@
-const { Transaction, User } = require("../models");
+const { Transaction, User, ExpenseCategory } = require("../models");
 const { Op } = require("sequelize");
 
 class ControllerTransaction {
@@ -11,8 +11,6 @@ class ControllerTransaction {
         startDate,
         endDate,
         expenseCategoryId,
-        minAmount,
-        maxAmount,
         page = 1,
         limit = 10,
       } = req.query;
@@ -41,12 +39,6 @@ class ControllerTransaction {
         };
       }
 
-      // if (minAmount || maxAmount) {
-      //   whereClause.amount = {};
-      //   if (minAmount) whereClause.amount[Op.gte] = parseFloat(minAmount);
-      //   if (maxAmount) whereClause.amount[Op.lte] = parseFloat(maxAmount);
-      // }
-
       const offset = (parseInt(page) - 1) * parseInt(limit);
 
       const { count, rows: transactions } = await Transaction.findAndCountAll({
@@ -59,6 +51,10 @@ class ControllerTransaction {
             model: User,
             as: "Updater",
             attributes: ["id", "name", "email"],
+          },
+          {
+            model: ExpenseCategory,
+            attributes: ["id", "name"],
           },
         ],
       });
