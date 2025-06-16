@@ -8,7 +8,9 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "migrate": "npx sequelize-cli db:migrate",
-    "start:migrate": "npm run migrate && node app.js"
+    "undo:migrate": "npx sequelize-cli db:migrate:undo:all",
+    "reset:migrate": "npm run undo:migrate && npm run migrate",
+    "start:reset": "npm run reset:migrate && node app.js"
   },
   "keywords": [],
   "author": "",
