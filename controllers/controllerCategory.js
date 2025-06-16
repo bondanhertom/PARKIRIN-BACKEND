@@ -1,10 +1,10 @@
-const { ExpenseCategory } = require("../models");
+const { SubType } = require("../models");
 
 class ControllerCategory {
   // GET /categories
   static async getAllCategories(req, res) {
     try {
-      const categories = await ExpenseCategory.findAll({
+      const categories = await SubType.findAll({
         order: [["createdAt", "DESC"]],
       });
 
@@ -24,7 +24,7 @@ class ControllerCategory {
         return res.status(400).json({ message: "Name is required" });
       }
 
-      const newCategory = await ExpenseCategory.create({
+      const newCategory = await SubType.create({
         name,
         description,
       });
@@ -32,6 +32,26 @@ class ControllerCategory {
       res.status(201).json(newCategory);
     } catch (error) {
       console.log(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  // DELETE /categories/:id
+  static async deleteCategory(req, res) {
+    try {
+      const { id } = req.params;
+
+      const category = await SubType.findByPk(id);
+
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+
+      await category.destroy();
+
+      res.status(200).json({ message: "Category deleted successfully" });
+    } catch (error) {
+      console.error(error);
       res.status(500).json({ message: "Internal Server Error" });
     }
   }

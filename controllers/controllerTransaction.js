@@ -1,4 +1,4 @@
-const { Transaction, User, ExpenseCategory } = require("../models");
+const { Transaction, User, SubType } = require("../models");
 const { Op } = require("sequelize");
 
 class ControllerTransaction {
@@ -10,7 +10,7 @@ class ControllerTransaction {
         type,
         startDate,
         endDate,
-        expenseCategoryId,
+        subTypeId,
         page = 1,
         limit = 10,
       } = req.query;
@@ -21,8 +21,8 @@ class ControllerTransaction {
         whereClause.type = type;
       }
 
-      if (expenseCategoryId) {
-        whereClause.expenseCategoryId = expenseCategoryId;
+      if (subTypeId) {
+        whereClause.subTypeId = subTypeId;
       }
 
       if (startDate && endDate) {
@@ -53,7 +53,7 @@ class ControllerTransaction {
             attributes: ["id", "name", "email"],
           },
           {
-            model: ExpenseCategory,
+            model: SubType,
             attributes: ["id", "name"],
           },
         ],
@@ -74,22 +74,28 @@ class ControllerTransaction {
   // POST /transaction
   static async createTransaction(req, res) {
     try {
-      const { type, amount, description, expenseCategoryId } = req.body;
+      const { type, amount, description, subTypeId, cashType, date } = req.body;
 
-      if (!type || !amount) {
-        return res
-          .status(400)
-          .json({ message: "Type and amount are required" });
+      if (!type || !amount || !date) {
+        return res.status(400).json({
+          message: "Type, amount, and date are required",
+        });
       }
+
+      // Format date untuk pastikan hanya YYYY-MM-DD
+      const formattedDate = new Date(date).toISOString().split("T")[0];
 
       // Create transaction
       const newTransaction = await Transaction.create({
         type,
         amount,
         description,
-        expenseCategoryId,
+        subTypeId,
         userId: req.user.id,
+        cashType,
         updatedBy: req.user.id,
+        createdAt: formattedDate,
+        updatedAt: formattedDate,
       });
 
       const transactionWithUser = await Transaction.findOne({
@@ -113,7 +119,7 @@ class ControllerTransaction {
   static async updateTransaction(req, res) {
     try {
       const { id } = req.params;
-      const { type, amount, description, expenseCategoryId } = req.body;
+      const { type, amount, description, subTypeId, cashType } = req.body;
 
       const transaction = await Transaction.findByPk(id);
 
@@ -125,7 +131,8 @@ class ControllerTransaction {
         type,
         amount,
         description,
-        expenseCategoryId,
+        subTypeId,
+        cashType,
         updatedBy: req.user.id,
       });
 
@@ -140,6 +147,26 @@ class ControllerTransaction {
       });
 
       res.status(200).json(updated);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  // DELETE /transaction/:id
+  static async deleteTransaction(req, res) {
+    try {
+      const { id } = req.params;
+
+      const transaction = await Transaction.findByPk(id);
+
+      if (!transaction) {
+        return res.status(404).json({ message: "Transaction not found" });
+      }
+
+      await transaction.destroy();
+
+      res.status(200).json({ message: "Transaction deleted successfully" });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal Server Error" });

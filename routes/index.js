@@ -8,25 +8,37 @@ const { authentication } = require("../middlewares/authentication");
 router.post("/register", ControllerUser.register);
 router.post("/login", ControllerUser.login);
 
-router.post("/category", authentication, ControllerCategory.createCategory);
-router.get("/category", authentication, ControllerCategory.getAllCategories);
+router.post("/categories", authentication, ControllerCategory.createCategory);
+router.get("/categories", authentication, ControllerCategory.getAllCategories);
 
 router.post(
-  "/transaction",
+  "/transactions",
   authentication,
   ControllerTransaction.createTransaction
 );
 
 router.get(
-  "/transaction",
+  "/transactions",
   authentication,
   ControllerTransaction.getAllTransaction
 );
 
 router.put(
-  "/transaction/:id",
+  "/transactions/:id",
   authentication,
   ControllerTransaction.updateTransaction
+);
+
+router.delete(
+  "/transactions/:id",
+  authentication,
+  ControllerTransaction.deleteTransaction
+);
+
+router.delete(
+  "/categories/:id",
+  authentication,
+  ControllerCategory.deleteCategory
 );
 
 module.exports = router;
