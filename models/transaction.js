@@ -4,8 +4,8 @@ module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     static associate(models) {
       Transaction.belongsTo(models.User, { foreignKey: "userId" });
-      Transaction.belongsTo(models.ExpenseCategory, {
-        foreignKey: "expenseCategoryId",
+      Transaction.belongsTo(models.SubType, {
+        foreignKey: "subTypeId",
       });
       Transaction.belongsTo(models.User, {
         as: "Updater",
@@ -28,13 +28,21 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       description: DataTypes.STRING,
-      expenseCategoryId: {
+      subTypeId: {
         type: DataTypes.INTEGER,
         allowNull: true,
+      },
+      cashType: {
+        type: DataTypes.ENUM("cash", "qris"),
+        allowNull: false,
       },
       updatedBy: {
         type: DataTypes.INTEGER,
         allowNull: true,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
       },
     },
     {

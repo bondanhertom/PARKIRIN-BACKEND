@@ -1,15 +1,15 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class ExpenseCategory extends Model {
+  class SubType extends Model {
     static associate(models) {
-      ExpenseCategory.hasMany(models.Transaction, {
-        foreignKey: "expenseCategoryId",
+      SubType.hasMany(models.Transaction, {
+        foreignKey: "subTypeId",
         as: "transactions",
       });
     }
   }
-  ExpenseCategory.init(
+  SubType.init(
     {
       name: {
         type: DataTypes.STRING,
@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "ExpenseCategory",
+      modelName: "SubType",
     }
   );
-  return ExpenseCategory;
+  return SubType;
 };

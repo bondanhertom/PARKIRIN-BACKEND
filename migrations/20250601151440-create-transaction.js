@@ -31,11 +31,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      expenseCategoryId: {
+      subTypeId: {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
-          model: "ExpenseCategories",
+          model: "SubTypes",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -51,7 +51,6 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
