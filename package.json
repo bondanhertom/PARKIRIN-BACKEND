@@ -10,7 +10,8 @@
     "migrate": "npx sequelize-cli db:migrate",
     "undo:migrate": "npx sequelize-cli db:migrate:undo:all",
     "reset:migrate": "npm run undo:migrate && npm run migrate",
-    "start:reset": "npm run reset:migrate && node app.js"
+    "start:reset": "npm run reset:migrate && node app.js",
+    "rebuild:db": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
