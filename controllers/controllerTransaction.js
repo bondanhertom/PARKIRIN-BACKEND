@@ -3,6 +3,7 @@ const {
   User,
   TransactionType,
   TransactionSource,
+  Wallet,
 } = require("../models");
 const { Op } = require("sequelize");
 
@@ -68,6 +69,10 @@ class ControllerTransaction {
           },
           {
             model: TransactionSource,
+            attributes: ["id", "name"],
+          },
+          {
+            model: Wallet,
             attributes: ["id", "name"],
           },
         ],
